@@ -73,8 +73,8 @@ function combinePosition(x1, y1, x2, y2) {
         var xDelta = Math.floor(Math.cos(angle) * distance);
         var yDelta = Math.floor(Math.sin(angle) * distance);
         return {
-            x: avg(x1, x2) + xDelta,
-            y: avg(y1, y2) + yDelta
+            x: Math.max(0, Math.min(w, avg(x1, x2) + xDelta)),
+            y: Math.max(0, Math.min(h, avg(y1, y2) + yDelta))
         };
     } else {
         return {
