@@ -70,11 +70,11 @@ function combinePosition(x1, y1, x2, y2) {
     if (randint(mutationFactor) == 1) {
         var distance = randint(30);
         var angle = Math.random() * Math.PI * 2;
-        var xDelta = Math.floor(Math.cos(angle) * distance);
-        var yDelta = Math.floor(Math.sin(angle) * distance);
+        var xDelta = Math.cos(angle) * distance;
+        var yDelta = Math.sin(angle) * distance;
         return {
-            x: Math.max(0, Math.min(w, avg(x1, x2) + xDelta)),
-            y: Math.max(0, Math.min(h, avg(y1, y2) + yDelta))
+            x: Math.max(0, Math.min(w, avg(x1 + xDelta, x2 + xDelta))),
+            y: Math.max(0, Math.min(h, avg(y1 + yDelta, y2 + yDelta)))
         };
     } else {
         return {
