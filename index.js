@@ -66,20 +66,29 @@ function combineColors(c1, c2) {
     }
 }
 
-
-function combinePosition(p1, p2, max) {
-    var newPos = avg(p1, p2);
+function combinePosition(x1, y1, x2, y2) {
     if (randint(mutationFactor) == 1) {
-        return Math.min(max, Math.max(0, newPos + randint(-30, 31)));
+        var distance = randint(30);
+        var angle = Math.random() * Math.PI * 2;
+        var xDelta = Math.floor(Math.cos(angle) * distance);
+        var yDelta = Math.floor(Math.sin(angle) * distance);
+        return {
+            x: avg(x1, x2) + xDelta,
+            y: avg(y1, y2) + yDelta
+        };
     } else {
-        return newPos;
+        return {
+            x: avg(x1, x2),
+            y: avg(y1, y2)
+        };
     }
 }
 
 function combinePixels(p1, p2) {
+    var newPos = combinePosition(p1.x, p1.y, p2.x, p2.y);
     return {
-        x: combinePosition(p1.x, p2.x, w),
-        y: combinePosition(p1.y, p2.y, h),
+        x: newPos.x,
+        y: newPos.y,
         color: combineColors(p1.color, p2.color)
     };
 }
