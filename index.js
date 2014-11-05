@@ -42,7 +42,7 @@ function avg(v1, v2) {
 }
 
 function randomcolor() {
-    return [randint(255), randint(255), randint(255)];
+    return [randint(256), randint(256), randint(256)];
 }
 
 function mutateColorComponent(num) {
@@ -50,7 +50,7 @@ function mutateColorComponent(num) {
 }
 
 function mutatecolor(color) {
-    return [mutateColorComponent(color[0]), mutateColorComponent(color[1]), mutateColorComponent(color[2])];
+    return color.map(mutateColorComponent);
 }
 
 function combineColors(c1, c2) {
