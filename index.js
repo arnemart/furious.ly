@@ -47,7 +47,7 @@ function addSlider(name, min, max, step) {
     return range;
 }
 
-addSlider('pixelsize', 1, 100, 1).addEventListener('change', function() {
+addSlider('pixelsize', 1, 50, 1).addEventListener('change', function() {
     w = Math.floor(window.innerWidth / opts.pixelsize);
     h = Math.floor(window.innerHeight / opts.pixelsize);
 });
