@@ -1,8 +1,37 @@
-var pixelSize = 6;
+var params = window.location.hash.replace(/^#/, '').split(';').reduce(function(ps, p) {
+    var parts = p.split(':');
+    ps[parts[0]] = parts[1];
+    return ps;
+}, {});
+
+function intParam(name, deflt) {
+    var val = parseInt(params[name], 10);
+    if (!isNaN(val)) {
+        return val;
+    } else {
+        return deflt;
+    }
+}
+
+function floatParam(name, deflt) {
+    var val = parseFloat(params[name]);
+    if (!isNaN(val)) {
+        return val;
+    } else {
+        return deflt;
+    }
+}
+
+var pixelSize = intParam('pixelsize', 10);
+var colormutationFactor = floatParam('colormutationfactor',0.1);
+var colormutation = intParam('colormutation', 10);
+var positionmutationFactor = floatParam('positionmutationfactor',0.1);
+var positionmutation = intParam('positionmutation', 10);
+var alpha = floatParam('alpha',0.1);
+var bw = params['bw'] == 'true';
+
 var w = Math.floor(window.innerWidth / pixelSize);
 var h = Math.floor(window.innerHeight / pixelSize);
-var mutationFactor = 10;
-var alpha = 0.1;
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
@@ -47,7 +76,7 @@ function randomcolor() {
 }
 
 function mutateColorComponent(num) {
-    return Math.min(255, Math.max(0, num + randint(-90, 91)));
+    return Math.min(255, Math.max(0, num + randint(-colormutation, colormutation + 1)));
 }
 
 function mutatecolor(color) {
@@ -55,12 +84,20 @@ function mutatecolor(color) {
 }
 
 function combineColors(c1, c2) {
-    var newColor = [
-        avg(c1[0], c2[0]),
-        avg(c1[1], c2[1]),
-        avg(c1[2], c2[2])
-    ];
-    if (randint(mutationFactor) == 1) {
+    if (bw) {
+        var newColor = [
+            avg(c1[0], c2[0]),
+            avg(c1[0], c2[0]),
+            avg(c1[0], c2[0])
+        ];
+    } else {
+        var newColor = [
+            avg(c1[0], c2[0]),
+            avg(c1[1], c2[1]),
+            avg(c1[2], c2[2])
+        ];
+    }
+    if (Math.random() < colormutationFactor) {
         return mutatecolor(newColor);
     } else {
         return newColor;
@@ -68,8 +105,8 @@ function combineColors(c1, c2) {
 }
 
 function combinePosition(x1, y1, x2, y2) {
-    if (randint(mutationFactor) == 1) {
-        var distance = randint(30);
+    if (Math.random() < positionmutationFactor) {
+        var distance = randint(positionmutation);
         var angle = Math.random() * Math.PI * 2;
         var xDelta = Math.cos(angle) * distance;
         var yDelta = Math.sin(angle) * distance;
