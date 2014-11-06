@@ -2,6 +2,7 @@ var pixelSize = 6;
 var w = Math.floor(window.innerWidth / pixelSize);
 var h = Math.floor(window.innerHeight / pixelSize);
 var mutationFactor = 10;
+var alpha = 0.1;
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
@@ -109,7 +110,7 @@ document.body.appendChild(canvas);
 var ctx = canvas.getContext('2d');
 
 function renderPixel(p) {
-    ctx.fillStyle = 'rgb(' + p.color.join(',') + ')';
+    ctx.fillStyle = 'rgba(' + p.color.join(',') + ', ' + alpha + ')';
     ctx.fillRect(p.x * pixelSize, p.y * pixelSize, pixelSize, pixelSize);
 }
 
