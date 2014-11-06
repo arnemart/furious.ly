@@ -4,16 +4,7 @@ var params = window.location.hash.replace(/^#/, '').split(';').reduce(function(p
     return ps;
 }, {});
 
-function intParam(name, deflt) {
-    var val = parseInt(params[name], 10);
-    if (!isNaN(val)) {
-        return val;
-    } else {
-        return deflt;
-    }
-}
-
-function floatParam(name, deflt) {
+function numParam(name, deflt) {
     var val = parseFloat(params[name]);
     if (!isNaN(val)) {
         return val;
@@ -22,16 +13,49 @@ function floatParam(name, deflt) {
     }
 }
 
-var pixelSize = intParam('pixelsize', 10);
-var colormutationFactor = floatParam('colormutationfactor',0.1);
-var colormutation = intParam('colormutation', 10);
-var positionmutationFactor = floatParam('positionmutationfactor',0.1);
-var positionmutation = intParam('positionmutation', 10);
-var alpha = floatParam('alpha',0.1);
-var bw = params['bw'] == 'true';
+var opts = {
+    pixelsize: numParam('pixelsize', 6),
+    colormutationfactor: numParam('colormutationfactor', 0.1),
+    colormutation: numParam('colormutation', 90),
+    positionmutationfactor: numParam('positionmutationfactor', 0.1),
+    positionmutation: numParam('positionmutation', 30),
+    alpha: numParam('alpha', 0.1),
+    bw: params['bw'] == 'true'
+};
 
-var w = Math.floor(window.innerWidth / pixelSize);
-var h = Math.floor(window.innerHeight / pixelSize);
+var w = Math.floor(window.innerWidth / opts.pixelsize);
+var h = Math.floor(window.innerHeight / opts.pixelsize);
+
+var controls = document.getElementById('controls');
+
+function addSlider(name, min, max, step) {
+    var range = document.createElement('input');
+    range.type = 'range';
+    range.min = min;
+    range.max = max;
+    range.step = step;
+    range.value = opts[name];
+    range.addEventListener('change', function(evt) {
+        opts[name] = parseFloat(evt.target.value);
+    });
+    var div = document.createElement('div');
+    var subDiv = document.createElement('div');
+    subDiv.innerText = name + ':';
+    div.appendChild(subDiv);
+    div.appendChild(range);
+    controls.appendChild(div);
+    return range;
+}
+
+addSlider('pixelsize', 1, 100, 1).addEventListener('change', function() {
+    w = Math.floor(window.innerWidth / opts.pixelsize);
+    h = Math.floor(window.innerHeight / opts.pixelsize);
+});
+addSlider('colormutationfactor', 0, 1, 0.01);
+addSlider('colormutation', 0, 255, 1);
+addSlider('positionmutationfactor', 0, 1, 0.01);
+addSlider('positionmutation', 0, 100, 1);
+addSlider('alpha', 0, 1, 0.01);
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
@@ -76,7 +100,7 @@ function randomcolor() {
 }
 
 function mutateColorComponent(num) {
-    return Math.min(255, Math.max(0, num + randint(-colormutation, colormutation + 1)));
+    return Math.min(255, Math.max(0, num + randint(-opts.colormutation, opts.colormutation + 1)));
 }
 
 function mutatecolor(color) {
@@ -84,7 +108,7 @@ function mutatecolor(color) {
 }
 
 function combineColors(c1, c2) {
-    if (bw) {
+    if (opts.bw) {
         var newColor = [
             avg(c1[0], c2[0]),
             avg(c1[0], c2[0]),
@@ -97,7 +121,7 @@ function combineColors(c1, c2) {
             avg(c1[2], c2[2])
         ];
     }
-    if (Math.random() < colormutationFactor) {
+    if (Math.random() < opts.colormutationfactor) {
         return mutatecolor(newColor);
     } else {
         return newColor;
@@ -105,8 +129,8 @@ function combineColors(c1, c2) {
 }
 
 function combinePosition(x1, y1, x2, y2) {
-    if (Math.random() < positionmutationFactor) {
-        var distance = randint(positionmutation);
+    if (Math.random() < opts.positionmutationfactor) {
+        var distance = randint(opts.positionmutation);
         var angle = Math.random() * Math.PI * 2;
         var xDelta = Math.cos(angle) * distance;
         var yDelta = Math.sin(angle) * distance;
@@ -141,14 +165,14 @@ function randomPixel() {
 
 
 var canvas = document.createElement('canvas');
-canvas.width = w * pixelSize;
-canvas.height = h * pixelSize;
+canvas.width = w * opts.pixelsize;
+canvas.height = h * opts.pixelsize;
 document.body.appendChild(canvas);
 var ctx = canvas.getContext('2d');
 
 function renderPixel(p) {
-    ctx.fillStyle = 'rgba(' + p.color.join(',') + ', ' + alpha + ')';
-    ctx.fillRect(p.x * pixelSize, p.y * pixelSize, pixelSize, pixelSize);
+    ctx.fillStyle = 'rgba(' + p.color.join(',') + ', ' + opts.alpha + ')';
+    ctx.fillRect(p.x * opts.pixelsize, p.y * opts.pixelsize, opts.pixelsize, opts.pixelsize);
 }
 
 var pixels = Array.apply(null, new Array(15)).map(randomPixel);
