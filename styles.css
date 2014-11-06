@@ -12,17 +12,17 @@ canvas {
     right: 0;
 }
 #controls {
-    display: none;
-    opacity: 0.2;
+    opacity: 0;
     margin: 10px;
     padding: 10px;
     position: absolute;
     z-index: 10;
     background-color: rgba(255,255,255,0.8);
+    transition: opacity 0.3s ease;
 }
 #controls:hover {
-    opacity: 1;
+    opacity: 1 !important;
 }
 body:hover #controls {
-    display: block;
+    opacity: 0.2;
 }
