@@ -28,6 +28,15 @@ var h = Math.floor(window.innerHeight / opts.pixelsize);
 
 var controls = document.getElementById('controls');
 
+function wrapInput(input, name) {
+    var div = document.createElement('div');
+    var subDiv = document.createElement('div');
+    subDiv.innerText = name + ':';
+    div.appendChild(subDiv);
+    div.appendChild(input);
+    controls.appendChild(div);
+}
+
 function addSlider(name, min, max, step) {
     var range = document.createElement('input');
     range.type = 'range';
@@ -38,13 +47,19 @@ function addSlider(name, min, max, step) {
     range.addEventListener('change', function(evt) {
         opts[name] = parseFloat(evt.target.value);
     });
-    var div = document.createElement('div');
-    var subDiv = document.createElement('div');
-    subDiv.innerText = name + ':';
-    div.appendChild(subDiv);
-    div.appendChild(range);
-    controls.appendChild(div);
+    wrapInput(range, name);
     return range;
+}
+
+function addCheckbox(name) {
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = opts[name];
+    checkbox.addEventListener('change', function(evt) {
+        opts[name] = evt.target.checked;
+    });
+    wrapInput(checkbox, name);
+    return checkbox;
 }
 
 addSlider('pixelsize', 1, 50, 1).addEventListener('change', function() {
@@ -56,6 +71,7 @@ addSlider('colormutationamount', 0, 255, 1);
 addSlider('positionmutationrate', 0, 1, 0.01);
 addSlider('positionmutationamount', 0, 100, 1);
 addSlider('alpha', 0, 1, 0.01);
+addCheckbox('bw');
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
