@@ -149,14 +149,15 @@ function mutatecolor(color) {
 }
 
 function combineColors(c1, c2) {
+    var newColor;
     if (opts.bw) {
-        var newColor = [
+        newColor = [
             avg(c1[0], c2[0]),
             avg(c1[0], c2[0]),
             avg(c1[0], c2[0])
         ];
     } else {
-        var newColor = [
+        newColor = [
             avg(c1[0], c2[0]),
             avg(c1[1], c2[1]),
             avg(c1[2], c2[2])
@@ -170,43 +171,53 @@ function combineColors(c1, c2) {
 }
 
 function combinePosition(x1, y1, x2, y2) {
+    var newX, newY;
     if (Math.random() < opts.positionmutationrate) {
         var distance = randint(opts.positionmutationamount);
         var angle = Math.random() * Math.PI * 2;
         var xDelta = Math.cos(angle) * distance;
         var yDelta = Math.sin(angle) * distance;
+        newX = avg(x1 + xDelta, x2 + xDelta);
+        newY = avg(y1 + yDelta, y2 + yDelta);
         return {
-            x: Math.max(0, Math.min(w, avg(x1 + xDelta, x2 + xDelta))),
-            y: Math.max(0, Math.min(h, avg(y1 + yDelta, y2 + yDelta)))
+            x: Math.max(0, Math.min(w, newX)),
+            y: Math.max(0, Math.min(h, newY)),
+            drawX: newX,
+            drawY: newY
         };
     } else {
+        newX = avg(x1, x2);
+        newY = avg(y1, y2);
         return {
-            x: avg(x1, x2),
-            y: avg(y1, y2)
+            x: newX,
+            y: newY,
+            drawX: newX,
+            drawY: newY
         };
     }
 }
 
 function combinePixels(p1, p2) {
-    var newPos = combinePosition(p1.x, p1.y, p2.x, p2.y);
-    return {
-        x: newPos.x,
-        y: newPos.y,
-        color: combineColors(p1.color, p2.color)
-    };
+    var newPixel = combinePosition(p1.x, p1.y, p2.x, p2.y);
+    newPixel.color = combineColors(p1.color, p2.color);
+    return newPixel;
 }
 
 function randomPixel() {
+    var x = randint(w);
+    var y = randint(h);
     return {
-        x: randint(w),
-        y: randint(h),
+        x: x,
+        y: y,
+        drawX: x,
+        drawY: y,
         color: randomcolor()
     };
 }
 
 function renderPixel(p) {
     ctx.fillStyle = 'rgba(' + p.color.join(',') + ', ' + opts.alpha + ')';
-    ctx.fillRect(p.x * opts.pixelsize, p.y * opts.pixelsize, opts.pixelsize, opts.pixelsize);
+    ctx.fillRect(p.drawX * opts.pixelsize, p.drawY * opts.pixelsize, opts.pixelsize, opts.pixelsize);
 }
 
 var pixels = Array.apply(null, new Array(15)).map(randomPixel);
