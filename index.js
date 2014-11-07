@@ -20,11 +20,19 @@ var opts = {
     positionmutationrate: numParam('positionmutationrate', 0.1),
     positionmutationamount: numParam('positionmutationamount', 30),
     alpha: numParam('alpha', 0.1),
-    bw: params['bw'] == 'true'
+    bw: params['bw'] == 'true',
+    running: true
 };
 
 var w = Math.floor(window.innerWidth / opts.pixelsize);
 var h = Math.floor(window.innerHeight / opts.pixelsize);
+
+var canvas = document.createElement('canvas');
+canvas.width = w * opts.pixelsize;
+canvas.height = h * opts.pixelsize;
+document.body.appendChild(canvas);
+var ctx = canvas.getContext('2d');
+
 
 var controls = document.getElementById('controls');
 
@@ -62,6 +70,13 @@ function addCheckbox(name) {
     return checkbox;
 }
 
+function addButton(text, fn) {
+    var btn = document.createElement('button');
+    btn.innerText = text;
+    btn.addEventListener('click', fn);
+    controls.appendChild(btn);
+}
+
 addSlider('pixelsize', 1, 50, 1).addEventListener('change', function() {
     w = Math.floor(window.innerWidth / opts.pixelsize);
     h = Math.floor(window.innerHeight / opts.pixelsize);
@@ -72,6 +87,16 @@ addSlider('positionmutationrate', 0, 1, 0.01);
 addSlider('positionmutationamount', 0, 100, 1);
 addSlider('alpha', 0, 1, 0.01);
 addCheckbox('bw');
+addButton('Stop', function() {
+    opts.running = false;
+});
+addButton('Start', function() {
+    opts.running = true;
+    doit();
+});
+addButton('Clear', function() {
+    ctx.clearRect(0, 0, w * opts.pixelsize, h * opts.pixelsize);
+});
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
@@ -179,13 +204,6 @@ function randomPixel() {
     };
 }
 
-
-var canvas = document.createElement('canvas');
-canvas.width = w * opts.pixelsize;
-canvas.height = h * opts.pixelsize;
-document.body.appendChild(canvas);
-var ctx = canvas.getContext('2d');
-
 function renderPixel(p) {
     ctx.fillStyle = 'rgba(' + p.color.join(',') + ', ' + opts.alpha + ')';
     ctx.fillRect(p.x * opts.pixelsize, p.y * opts.pixelsize, opts.pixelsize, opts.pixelsize);
@@ -207,7 +225,9 @@ function iterate(ps) {
 function doit() {
     pixels = shuffle(iterate(pixels));
     pixels.forEach(renderPixel);
-    requestAnimationFrame(doit);
+    if (opts.running) {
+        requestAnimationFrame(doit);
+    }
 }
 
 doit();
