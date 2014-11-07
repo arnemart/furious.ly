@@ -15,10 +15,10 @@ function numParam(name, deflt) {
 
 var opts = {
     pixelsize: numParam('pixelsize', 6),
-    colormutationfactor: numParam('colormutationfactor', 0.1),
-    colormutation: numParam('colormutation', 90),
-    positionmutationfactor: numParam('positionmutationfactor', 0.1),
-    positionmutation: numParam('positionmutation', 30),
+    colormutationrate: numParam('colormutationrate', 0.1),
+    colormutationamount: numParam('colormutationamount', 90),
+    positionmutationrate: numParam('positionmutationrate', 0.1),
+    positionmutationamount: numParam('positionmutationamount', 30),
     alpha: numParam('alpha', 0.1),
     bw: params['bw'] == 'true'
 };
@@ -51,10 +51,10 @@ addSlider('pixelsize', 1, 50, 1).addEventListener('change', function() {
     w = Math.floor(window.innerWidth / opts.pixelsize);
     h = Math.floor(window.innerHeight / opts.pixelsize);
 });
-addSlider('colormutationfactor', 0, 1, 0.01);
-addSlider('colormutation', 0, 255, 1);
-addSlider('positionmutationfactor', 0, 1, 0.01);
-addSlider('positionmutation', 0, 100, 1);
+addSlider('colormutationrate', 0, 1, 0.01);
+addSlider('colormutationamount', 0, 255, 1);
+addSlider('positionmutationrate', 0, 1, 0.01);
+addSlider('positionmutationamount', 0, 100, 1);
 addSlider('alpha', 0, 1, 0.01);
 
 // From https://github.com/sindresorhus/array-shuffle/
@@ -100,7 +100,7 @@ function randomcolor() {
 }
 
 function mutateColorComponent(num) {
-    return Math.min(255, Math.max(0, num + randint(-opts.colormutation, opts.colormutation + 1)));
+    return Math.min(255, Math.max(0, num + randint(-opts.colormutationamount, opts.colormutationamount + 1)));
 }
 
 function mutatecolor(color) {
@@ -121,7 +121,7 @@ function combineColors(c1, c2) {
             avg(c1[2], c2[2])
         ];
     }
-    if (Math.random() < opts.colormutationfactor) {
+    if (Math.random() < opts.colormutationrate) {
         return mutatecolor(newColor);
     } else {
         return newColor;
@@ -129,8 +129,8 @@ function combineColors(c1, c2) {
 }
 
 function combinePosition(x1, y1, x2, y2) {
-    if (Math.random() < opts.positionmutationfactor) {
-        var distance = randint(opts.positionmutation);
+    if (Math.random() < opts.positionmutationrate) {
+        var distance = randint(opts.positionmutationamount);
         var angle = Math.random() * Math.PI * 2;
         var xDelta = Math.cos(angle) * distance;
         var yDelta = Math.sin(angle) * distance;

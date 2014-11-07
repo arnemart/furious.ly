@@ -6,10 +6,10 @@ There are sliders to change params. They can also be set in the url hash.
 
 - `pixelsize`: The size of each pixel, in, uh, pixels. Default: 6
 - `alpha`: Transparency of rendered pixels. Default: 0.1
-- `colormutationfactor`: How often color mutations should occur. Default: 0.1
-- `colormutation`: Maximum size of color component mutation. Default: 90 (color components are 0-255)
-- `positionmutationfactor`: How often position mutations should occur. Default: 0.1
-- `positionmutation`: Maximum size of position component mutation. Default: 30
+- `colormutationrate`: How often color mutations should occur. Default: 0.1
+- `colormutationanount`: Maximum size of color component mutation. Default: 90 (color components are 0-255)
+- `positionmutationrate`: How often position mutations should occur. Default: 0.1
+- `positionmutationamount`: Maximum size of position component mutation. Default: 30
 - `bw`: Set to `true` to render all non-mutated pixels in black and white. Default: false
 
 Examples:
