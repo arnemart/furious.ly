@@ -33,6 +33,12 @@ canvas.height = h * opts.pixelsize;
 document.body.appendChild(canvas);
 var ctx = canvas.getContext('2d');
 
+function clear() {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, w * opts.pixelsize, h * opts.pixelsize);
+}
+
+clear();
 
 var controls = document.getElementById('controls');
 
@@ -94,8 +100,12 @@ addButton('Start', function() {
     opts.running = true;
     doit();
 });
-addButton('Clear', function() {
-    ctx.clearRect(0, 0, w * opts.pixelsize, h * opts.pixelsize);
+addButton('Clear', clear);
+addButton('↓', function() {
+    var link = document.createElement('a');
+    link.href = canvas.toDataURL();
+    link.download = 'furiously.png';
+    link.click();
 });
 
 // From https://github.com/sindresorhus/array-shuffle/
