@@ -101,12 +101,14 @@ addButton('Start', function() {
     doit();
 });
 addButton('Clear', clear);
-addButton('↓', function() {
-    var link = document.createElement('a');
-    link.href = canvas.toDataURL();
-    link.download = 'furiously.png';
-    link.click();
+var downloadlink = document.createElement('a');
+downloadlink.href = '#';
+downloadlink.addEventListener('click', function() {
+    this.href = canvas.toDataURL();
+    this.download = 'furiously.png';
 });
+downloadlink.innerText = '↓';
+controls.appendChild(downloadlink);
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
