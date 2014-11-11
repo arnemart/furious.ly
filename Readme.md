@@ -14,6 +14,6 @@ There are sliders to change params. They can also be set in the url hash.
 
 Examples:
 
-[#alpha:0.2;bw:true;colormutation:30](http://furious.ly/#alpha:0.2;bw:true;colormutation:30)
-[#pixelsize:20;alpha:1](http://furious.ly/#pixelsize:20;alpha:1)
-[#colormutation:0;alpha:0.02;positionmutation:100](http://furious.ly/#colormutation:0;alpha:0.02;positionmutation:100)
+- [#alpha:0.2;bw:true;colormutation:30](http://furious.ly/#alpha:0.2;bw:true;colormutation:30)
+- [#pixelsize:20;alpha:1](http://furious.ly/#pixelsize:20;alpha:1)
+- [#colormutation:0;alpha:0.02;positionmutation:100](http://furious.ly/#colormutation:0;alpha:0.02;positionmutation:100)
