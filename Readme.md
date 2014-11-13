@@ -10,6 +10,7 @@ There are sliders to change params. They can also be set in the url hash.
 - `colormutationanount`: Maximum size of color component mutation. Default: 90 (color components are 0-255)
 - `positionmutationrate`: How often position mutations should occur. Default: 0.1
 - `positionmutationamount`: Maximum size of position component mutation. Default: 30
+- `followcursor`: How much the pixels should tend toward the cursor. Default: 0
 - `bw`: Set to `true` to render all non-mutated pixels in black and white. Default: false
 
 Examples:

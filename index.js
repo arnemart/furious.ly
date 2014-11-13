@@ -19,6 +19,7 @@ var opts = {
     colormutationamount: numParam('colormutationamount', 90),
     positionmutationrate: numParam('positionmutationrate', 0.1),
     positionmutationamount: numParam('positionmutationamount', 30),
+    followcursor: numParam('followcursor', 0),
     alpha: numParam('alpha', 0.1),
     bw: params['bw'] == 'true',
     running: true
@@ -26,6 +27,8 @@ var opts = {
 
 var w = Math.floor(window.innerWidth / opts.pixelsize);
 var h = Math.floor(window.innerHeight / opts.pixelsize);
+var mx = -1;
+var my = -1;
 
 var canvas = document.createElement('canvas');
 canvas.width = w * opts.pixelsize;
@@ -91,6 +94,7 @@ addSlider('colormutationrate', 0, 1, 0.01);
 addSlider('colormutationamount', 0, 255, 1);
 addSlider('positionmutationrate', 0, 1, 0.01);
 addSlider('positionmutationamount', 0, 100, 1);
+addSlider('followcursor', 0, 1, 0.01);
 addSlider('alpha', 0, 1, 0.01);
 addCheckbox('bw');
 addButton('Stop', function() {
@@ -109,6 +113,21 @@ downloadlink.addEventListener('click', function() {
 });
 downloadlink.innerText = '↓';
 controls.appendChild(downloadlink);
+
+document.body.addEventListener('mousemove', function(e) {
+    mx = e.x / opts.pixelsize;
+    my = e.y / opts.pixelsize;
+});
+
+document.body.addEventListener('mouseout', function(e) {
+    mx = -1;
+    my = -1;
+});
+
+document.body.addEventListener('mousecancel', function(e) {
+    mx = -1;
+    my = -1;
+});
 
 // From https://github.com/sindresorhus/array-shuffle/
 function shuffle(arr) {
@@ -186,9 +205,18 @@ function combinePosition(x1, y1, x2, y2) {
     var newX, newY;
     if (Math.random() < opts.positionmutationrate) {
         var distance = randint(opts.positionmutationamount);
-        var angle = Math.random() * Math.PI * 2;
-        var xDelta = Math.cos(angle) * distance;
-        var yDelta = Math.sin(angle) * distance;
+        var xDelta, yDelta;
+        if (opts.followcursor > 0 && mx >= 0 && my >= 0 && Math.random() > (1 - opts.followcursor)) {
+            var mDeltaX = mx - avg(x1, x2);
+            var mDeltaY = my - avg(y1, y2);
+            var mouseAngle = Math.atan2(mDeltaY, mDeltaX);
+            xDelta = Math.cos(mouseAngle) * distance;
+            yDelta = Math.sin(mouseAngle) * distance;
+        } else {
+            var angle = Math.random() * Math.PI * 2;
+            xDelta = Math.cos(angle) * distance;
+            yDelta = Math.sin(angle) * distance;
+        }
         newX = avg(x1 + xDelta, x2 + xDelta);
         newY = avg(y1 + yDelta, y2 + yDelta);
         return {
