@@ -48,7 +48,7 @@ var controls = document.getElementById('controls');
 function wrapInput(input, name) {
     var div = document.createElement('div');
     var subDiv = document.createElement('div');
-    subDiv.innerText = name + ':';
+    subDiv.textContent = name + ':';
     div.appendChild(subDiv);
     div.appendChild(input);
     controls.appendChild(div);
@@ -81,7 +81,7 @@ function addCheckbox(name) {
 
 function addButton(text, fn) {
     var btn = document.createElement('button');
-    btn.innerText = text;
+    btn.textContent = text;
     btn.addEventListener('click', fn);
     controls.appendChild(btn);
 }
@@ -111,7 +111,7 @@ downloadlink.addEventListener('click', function() {
     this.href = canvas.toDataURL();
     this.download = 'furiously.png';
 });
-downloadlink.innerText = '↓';
+downloadlink.textContent = '↓';
 controls.appendChild(downloadlink);
 
 document.body.addEventListener('mousemove', function(e) {
